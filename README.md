@@ -8,6 +8,8 @@ It supports Android, iOS, WebGL, and standalone platforms like Windows and macOS
 
 The plugin provides an easy way to authenticate users with Google accounts and access their profile information, handling platform-specific details for a seamless user experience.
 
+Please buy or download the plugin using unity assets store:
+[https://assetstore.unity.com/packages/slug/293326](https://assetstore.unity.com/packages/slug/293326)
 
 ## Supported Platforms
 
