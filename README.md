@@ -1,8 +1,8 @@
-# Google Sign In Plugin
+# Universal Integration for Google Sign-In
 
 ## Introduction
 
-The `GoogleSignIn` plugin simplifies integrating Google Sign-In into Unity projects.
+The `Universal Integration for Google Sign-In` plugin simplifies integrating Google Sign-In into Unity projects.
 
 It supports Android, iOS, WebGL, and standalone platforms like Windows and macOS.
 
@@ -32,11 +32,11 @@ This setup is essential for proper authentication and callback handling.
 Before using Google Sign-In, you need to initialize the plugin with your Google Client ID.
 
 ```csharp
-using GoogleSignIn;
+using SyE.UI4GS;
 
 void Start() {
     string clientId = "your-client-id.apps.googleusercontent.com";
-    GoogleSignIn.Init(clientId, OnInitialized);
+    UniversalGSignIn.Init(clientId, OnInitialized);
 }
 
 void OnInitialized() {
@@ -50,10 +50,10 @@ To sign in a user, call the `SignIn` method. This will prompt the user to log in
 
 ```csharp
 void SignInUser() {
-    GoogleSignIn.SignIn(OnSignIn);
+    UniversalGSignIn.SignIn(OnSignIn);
 }
 
-void OnSignIn(GoogleSignIn.GoogleUser user) {
+void OnSignIn(UniversalGSignIn.GoogleUser user) {
     if (string.IsNullOrEmpty(user.error)) {
         Debug.Log("User signed in: " + user.basicProfile.name);
     } else {
@@ -68,10 +68,10 @@ If your application requires offline access to Google APIs, request it using the
 
 ```csharp
 void GrantAccess() {
-    GoogleSignIn.GrantOfflineAccess(OnAccessGranted);
+    UniversalGSignIn.GrantOfflineAccess(OnAccessGranted);
 }
 
-void OnAccessGranted(GoogleSignIn.GrantOfflineAccessResponse response) {
+void OnAccessGranted(UniversalGSignIn.GrantOfflineAccessResponse response) {
     if (string.IsNullOrEmpty(response.error)) {
         Debug.Log("Access granted, code: " + response.code);
     } else {
@@ -86,7 +86,7 @@ To sign out the user from their Google account:
 
 ```csharp
 void SignOutUser() {
-    GoogleSignIn.SignOut();
+    UniversalGSignIn.SignOut();
     Debug.Log("User signed out.");
 }
 ```
@@ -96,7 +96,7 @@ void SignOutUser() {
 To check if the user is currently signed in:
 
 ```csharp
-bool isSignedIn = GoogleSignIn.IsSignedIn();
+bool isSignedIn = UniversalGSignIn.IsSignedIn();
 Debug.Log("Is user signed in? " + isSignedIn);
 ```
 
@@ -105,7 +105,7 @@ Debug.Log("Is user signed in? " + isSignedIn);
 Retrieve the basic profile information of the signed-in user:
 
 ```csharp
-GoogleSignIn.BasicProfile profile = GoogleSignIn.GetCurrentUserBasicProfile();
+UniversalGSignIn.BasicProfile profile = UniversalGSignIn.GetCurrentUserBasicProfile();
 Debug.Log("User Name: " + profile.name);
 Debug.Log("User Email: " + profile.email);
 ```
@@ -114,10 +114,10 @@ Debug.Log("User Email: " + profile.email);
 
 ## Error Handling
 
-Most methods in the `GoogleSignIn` plugin return an error message if something goes wrong. Always check for errors in the callbacks to ensure a smooth user experience.
+Most methods in the plugin return an error message if something goes wrong. Always check for errors in the callbacks to ensure a smooth user experience.
 
 ```csharp
-void OnSignIn(GoogleSignIn.GoogleUser user) {
+void OnSignIn(UniversalGSignIn.GoogleUser user) {
     if (!string.IsNullOrEmpty(user.error)) {
         Debug.LogError("Sign-In Error: " + user.error);
         return;
@@ -137,4 +137,4 @@ For any questions or support, feel free to reach out at [mohelm97@gmail.com](mai
 
 ---
 
-Thank you for using the `GoogleSignIn` plugin! We hope it simplifies the process of integrating Google authentication into your Unity projects.
+Thank you for using the `Universal Integration for Google Sign-In` plugin! We hope it simplifies the process of integrating Google authentication into your Unity projects.
