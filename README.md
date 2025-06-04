@@ -75,7 +75,7 @@ UniversalGSignIn.Init("your-web-client-id", OnInit);
 * **Init**:
 
 ```csharp
-UniversalGSignIn.Init("your-ios-client-id", scheme: "com.googleusercontent.apps.xxxxx", OnInit);
+UniversalGSignIn.Init("your-ios-client-id", OnInit, urlScheme: "com.googleusercontent.apps.xxxxx");
 ```
 
 ---
@@ -90,9 +90,9 @@ UniversalGSignIn.Init("your-ios-client-id", scheme: "com.googleusercontent.apps.
 ```csharp
 UniversalGSignIn.Init(
     "your-desktop-client-id",
-    secret: "your-client-secret",
-    loopbackUri: "http://localhost:3000",
-    OnInit
+    OnInit,
+    clientSecret: "your-client-secret",
+    loopbackLink: "http://localhost:3000"
 );
 ```
 
