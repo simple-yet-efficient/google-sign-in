@@ -2,119 +2,145 @@
 
 ## Introduction
 
-The `Universal Integration for Google Sign-In` plugin simplifies integrating Google Sign-In into Unity projects.
+The **Universal Integration for Google Sign-In** plugin simplifies integrating Google authentication into Unity projects across multiple platforms.
 
-It supports Android, iOS, WebGL, and standalone platforms like Windows and macOS.
+![Universal Integration for Google Sign-In](https://github.com/user-attachments/assets/a4167ef3-df87-4634-a9cd-56524e035e29)
 
-The plugin provides an easy way to authenticate users with Google accounts and access their profile information, handling platform-specific details for a seamless user experience.
+It supports **Android**, **iOS**, **WebGL**, **Windows**, **macOS**, **UWP**, and the **Unity Editor**, handling platform-specific flows for a seamless user experience.
 
-Please buy or download the plugin using Unity Asset Store: [https://assetstore.unity.com/packages/slug/293326](https://assetstore.unity.com/packages/slug/293326)
+🔗 Available on the Unity Asset Store:
+[https://assetstore.unity.com/packages/slug/293326](https://assetstore.unity.com/packages/slug/293326)
 
-## Supported Platforms
+---
 
-- **WebGL**: Native support.
-- **Android**: Native support.
-- **iOS**: Deeplink using `ASWebAuthenticationSession`.
-- **macOS, UWP**: Deeplink.
-- **Windows, Editor**: Loopback.
+## ✅ Supported Platforms
 
-### Notes
+* **WebGL**: JavaScript-based OAuth 2.0 implicit flow.
+* **Android**: Native sign-in using Google Play Services.
+* **iOS**: ASWebAuthenticationSession + Deep Link.
+* **macOS / UWP**: System browser + Deep Link.
+* **Windows / Unity Editor**: Loopback server flow.
 
-1. **Deep Linking Configuration**: For platforms that utilize deep linking (iOS, macOS, UWP), you must configure the player settings to enable deep linking. Refer to the [Unity Manual on Deep Linking](https://docs.unity3d.com/Manual/deep-linking.html) and make sure to specify the URL scheme used in the `Init` call.
-2. **Loopback Configuration**: For platforms using loopback (Windows, Editor), you need to provide your client secret and specify a loopback URL (e.g., `http://localhost:3000`) in the `Init` call.
+---
 
-This setup is essential for proper authentication and callback handling.
+## ⚙️ Platform Setup Guide
 
-## Getting Started
+### WebGL
 
-### 1. Initialize GoogleSignIn
+* **Client ID**: Use a **Web Client ID** from Google Credentials.
+* **Init**: Provide this ID directly.
+* **Google Console Setup**:
 
-Before using Google Sign-In, you need to initialize the plugin with your Google Client ID.
-
-```csharp
-using SyE.UI4GS;
-
-void Start() {
-    string clientId = "your-client-id.apps.googleusercontent.com";
-    UniversalGSignIn.Init(clientId, OnInitialized);
-}
-
-void OnInitialized() {
-    Debug.Log("Google Sign-In Initialized");
-}
-```
-
-### 2. Sign In the User
-
-To sign in a user, call the `SignIn` method. This will prompt the user to log in with their Google account.
+  * Set **Authorized redirect URIs** to match your domain.
+  * Set **Authorized JavaScript origins** to match your domain.
 
 ```csharp
-void SignInUser() {
-    UniversalGSignIn.SignIn(OnSignIn);
-}
-
-void OnSignIn(UniversalGSignIn.GoogleUser user) {
-    if (string.IsNullOrEmpty(user.error)) {
-        Debug.Log("User signed in: " + user.basicProfile.name);
-    } else {
-        Debug.LogError("Sign-In Error: " + user.error);
-    }
-}
+UniversalGSignIn.Init("your-web-client-id", OnInit);
 ```
 
-### 3. Grant Offline Access
+---
 
-If your application requires offline access to Google APIs, request it using the `GrantOfflineAccess` method.
+### Android
+
+* **Create Two Client IDs** in Google Cloud Console:
+
+  1. **Android Client ID**
+
+     * Set **package name** and **SHA1 fingerprint** using:
+
+       ```sh
+       keytool -keystore path-to-debug-or-production-keystore -list -v
+       ```
+  2. **Web Client ID**
+
+     * This will be passed to the `Init` method (Google auto-detects Android client ID internally).
 
 ```csharp
-void GrantAccess() {
-    UniversalGSignIn.GrantOfflineAccess(OnAccessGranted);
-}
-
-void OnAccessGranted(UniversalGSignIn.GrantOfflineAccessResponse response) {
-    if (string.IsNullOrEmpty(response.error)) {
-        Debug.Log("Access granted, code: " + response.code);
-    } else {
-        Debug.LogError("Access Error: " + response.error);
-    }
-}
+UniversalGSignIn.Init("your-web-client-id", OnInit);
 ```
 
-### 4. Sign Out the User
+> [!CAUTION]
+> Do not use the Android client ID in Unity. Google Play Services automatically uses it on Android devices.
 
-To sign out the user from their Google account:
+---
+
+### iOS / macOS / UWP (Deep Link + ASWebAuthenticationSession)
+
+* **Client ID**: Create an **iOS Client ID** (even for UWP/macOS).
+* **Get iOS URL Scheme** from Google Console.
+* **Configure Deep Linking**:
+
+  * Follow Unity’s [Deep Linking Guide](https://docs.unity3d.com/Manual/deep-linking.html)
+  * Add the scheme to all target platforms (iOS, macOS, UWP).
+* **Init**:
 
 ```csharp
-void SignOutUser() {
-    UniversalGSignIn.SignOut();
-    Debug.Log("User signed out.");
-}
+UniversalGSignIn.Init("your-ios-client-id", scheme: "com.googleusercontent.apps.xxxxx", OnInit);
 ```
 
-### 5. Check if User is Signed In
+---
 
-To check if the user is currently signed in:
+### Windows / Unity Editor (Loopback)
+
+* **Client ID**: Create a **Desktop Client ID**.
+* **Client Secret**: Required for full sign-in; optional if only requesting offline access.
+* **Redirect URI**: Use something like `http://localhost:3000/`.
+* **Init**:
+
+```csharp
+UniversalGSignIn.Init(
+    "your-desktop-client-id",
+    secret: "your-client-secret",
+    loopbackUri: "http://localhost:3000",
+    OnInit
+);
+```
+
+---
+
+## 🧪 Basic Usage
+
+### Initialize
+
+```csharp
+UniversalGSignIn.Init(clientId, OnInitialized);
+```
+
+### Sign In
+
+```csharp
+UniversalGSignIn.SignIn(OnSignIn);
+```
+
+### Grant Offline Access
+
+```csharp
+UniversalGSignIn.GrantOfflineAccess(OnAccessGranted);
+```
+
+### Sign Out
+
+```csharp
+UniversalGSignIn.SignOut();
+```
+
+### Check Sign-In Status
 
 ```csharp
 bool isSignedIn = UniversalGSignIn.IsSignedIn();
-Debug.Log("Is user signed in? " + isSignedIn);
 ```
 
-### 6. Get User's Profile Information
-
-Retrieve the basic profile information of the signed-in user:
+### Get Basic Profile
 
 ```csharp
-UniversalGSignIn.BasicProfile profile = UniversalGSignIn.GetCurrentUserBasicProfile();
-Debug.Log("User Name: " + profile.name);
-Debug.Log("User Email: " + profile.email);
+var profile = UniversalGSignIn.GetCurrentUserBasicProfile();
 ```
 
+---
 
+## 🛠️ Error Handling
 
-## Error Handling
-
-Most methods in the plugin return an error message if something goes wrong. Always check for errors in the callbacks to ensure a smooth user experience.
+Always check for errors:
 
 ```csharp
 void OnSignIn(UniversalGSignIn.GoogleUser user) {
@@ -122,19 +148,22 @@ void OnSignIn(UniversalGSignIn.GoogleUser user) {
         Debug.LogError("Sign-In Error: " + user.error);
         return;
     }
-    // Process signed-in user data
+    Debug.Log("Signed in as: " + user.basicProfile.name);
 }
 ```
 
+---
 
-## License
+## 📜 License
 
-This plugin is licensed under [Standard Unity Asset Store EULA](https://unity.com/legal/as-terms).
-
-## Contact
-
-For any questions or support, feel free to reach out at [mohelm97@gmail.com](mailto:mohelm97@gmail.com).
+Licensed under the [Standard Unity Asset Store EULA](https://unity.com/legal/as-terms).
 
 ---
 
-Thank you for using the `Universal Integration for Google Sign-In` plugin! We hope it simplifies the process of integrating Google authentication into your Unity projects.
+## 📩 Contact
+
+For support or questions: [mohelm97@gmail.com](mailto:mohelm97@gmail.com)
+
+---
+
+🙌 Thank you for using **Universal Integration for Google Sign-In**!
